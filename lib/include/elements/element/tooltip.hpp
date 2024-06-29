@@ -11,7 +11,7 @@
 #include <infra/support.hpp>
 #include <functional>
 
-namespace cycfi { namespace elements
+namespace cycfi::elements
 {
    ////////////////////////////////////////////////////////////////////////////
    // Tooltip elements
@@ -58,7 +58,7 @@ namespace cycfi { namespace elements
       tooltip_position        _position;
    };
 
-   template <typename Subject, typename Tip>
+   template <concepts::Element Subject, typename Tip>
    inline proxy<remove_cvref_t<Subject>, tooltip_element>
    tooltip(
       Subject&& subject
@@ -68,6 +68,6 @@ namespace cycfi { namespace elements
    {
       return {std::forward<Subject>(subject), std::forward<Tip>(tip), delay, pos};
    }
-}}
+}
 
 #endif

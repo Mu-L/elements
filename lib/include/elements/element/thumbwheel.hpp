@@ -13,7 +13,7 @@
 #include <functional>
 #include <array>
 
-namespace cycfi { namespace elements
+namespace cycfi::elements
 {
    ////////////////////////////////////////////////////////////////////////////
    // Thumbwheels
@@ -47,7 +47,7 @@ namespace cycfi { namespace elements
       point          _value;
    };
 
-   template <typename Subject>
+   template <concepts::Element Subject>
    inline proxy<remove_cvref_t<Subject>, thumbwheel_base>
    thumbwheel(Subject&& subject, point init = {0.0f, 0.0f})
    {
@@ -63,6 +63,6 @@ namespace cycfi { namespace elements
    {
       return element::hit_test(ctx, p, leaf, control);
    }
-}}
+}
 
 #endif

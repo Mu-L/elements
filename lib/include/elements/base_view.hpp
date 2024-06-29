@@ -24,7 +24,7 @@
 # include <windows.h>
 #endif
 
-namespace cycfi { namespace elements
+namespace cycfi::elements
 {
    ////////////////////////////////////////////////////////////////////////////
    // Mouse Button
@@ -73,6 +73,9 @@ namespace cycfi { namespace elements
    {
       float    x = 1.0;
       float    y = 1.0;
+
+      constexpr float&  operator[](axis a);
+      constexpr float   operator[](axis a) const;
    };
 
    ////////////////////////////////////////////////////////////////////////////
@@ -277,6 +280,23 @@ namespace cycfi { namespace elements
       int               modifiers;
    };
 
+   /**
+    * \struct drop_info
+    *
+    * \brief
+    *    A structure encapsulating information about a drag-and-drop
+    *    operation.
+    *
+    *    The `drop_info` structure contains information about a drop
+    *    operation, including the payload data and the drop location.
+    *
+    * \var payload data
+    *    The payload that is being transferred during the drag-and-drop
+    *    operation (see payload for more info).
+    *
+    * \var mutable point where
+    *    The location where the drop operation takes place.
+    */
    struct drop_info
    {
       payload           data;
@@ -373,6 +393,17 @@ namespace cycfi { namespace elements
    ////////////////////////////////////////////////////////////////////////////
    // Scroll direction
    point scroll_direction();
-}}
+
+   ////////////////////////////////////////////////////////////////////////////
+   constexpr float& view_stretch::operator[](axis a)
+   {
+      return a==axis::x ? x : y;
+   }
+
+   constexpr float view_stretch::operator[](axis a) const
+   {
+     return a==axis::x ? x : y;
+   }
+}
 
 #endif

@@ -81,7 +81,7 @@ namespace
    };
 }
 
-namespace cycfi { namespace elements
+namespace cycfi::elements
 {
    // These functions are defined in key.mm:
    key_code    translate_key(unsigned int key);
@@ -95,7 +95,7 @@ namespace cycfi { namespace elements
       get_resource_path(resource_path);
       return fs::path(resource_path);
    }
-}}
+}
 
 namespace
 {
@@ -208,6 +208,12 @@ namespace
 {
    _task = nil;
    _view = nullptr;
+}
+
+- (void) viewDidMoveToWindow
+{
+   if (self.window)
+      [[self window] makeFirstResponder : self];
 }
 
 - (void) on_tick : (id) sender
@@ -383,7 +389,6 @@ namespace
 - (void) mouseEntered : (NSEvent*) event
 {
    [[self window] setAcceptsMouseMovedEvents : YES];
-   [[self window] makeFirstResponder : self];
    auto pos = [event locationInWindow];
    pos = [self convertPoint : pos fromView : nil];
    _view->cursor({float(pos.x), float(pos.y)}, ph::cursor_tracking::entering);
@@ -635,7 +640,7 @@ namespace
 
 @end // @implementation ElementsView
 
-namespace cycfi { namespace elements
+namespace cycfi::elements
 {
    namespace
    {
@@ -776,5 +781,5 @@ namespace cycfi { namespace elements
       float dir = [[[NSUserDefaults standardUserDefaults] objectForKey:@"com.apple.swipescrolldirection"] boolValue]? +1.0f : -1.0f;
       return {dir, dir};
    }
-}}
+}
 

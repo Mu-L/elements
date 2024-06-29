@@ -7,11 +7,8 @@
 #include <elements/element/floating.hpp>
 #include <elements/view.hpp>
 
-namespace cycfi { namespace elements
+namespace cycfi::elements
 {
-   ////////////////////////////////////////////////////////////////////////////
-   // child_window_element
-   ////////////////////////////////////////////////////////////////////////////
    bool child_window_element::click(context const& ctx, mouse_button btn)
    {
       if (btn.down)
@@ -36,9 +33,6 @@ namespace cycfi { namespace elements
       return floating_element::click(ctx, btn);
    }
 
-   ////////////////////////////////////////////////////////////////////////////
-   // movable_base
-   ////////////////////////////////////////////////////////////////////////////
    element* movable_base::hit_test(context const& ctx, point p, bool /*leaf*/, bool /*control*/)
    {
       if (ctx.enabled && is_enabled() && ctx.bounds.includes(p))
@@ -101,11 +95,8 @@ namespace cycfi { namespace elements
       }
    }
 
-   ////////////////////////////////////////////////////////////////////////////
-   // closable_element
-   ////////////////////////////////////////////////////////////////////////////
    void close_floating_element(context& ctx, floating_element* fl)
    {
       ctx.view.remove(fl->shared_from_this());
    }
-}}
+}

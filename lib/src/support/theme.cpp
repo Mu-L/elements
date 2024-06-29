@@ -7,7 +7,7 @@
 #include <elements/element/dial.hpp>
 #include <elements/view.hpp>
 
-namespace cycfi { namespace elements
+namespace cycfi::elements
 {
    theme::theme()
     : panel_color                {rgba(28, 30, 34, 192)}
@@ -25,6 +25,7 @@ namespace cycfi { namespace elements
     , slide_button_on_color      {rgba(0, 127, 255, 200)}
     , slide_button_base_color    {rgba(127, 127, 127, 100)}
     , slide_button_thumb_color   {rgba(240, 240, 240, 200)}
+    , active_tab_color           {colors::gray[50]}
 
     , controls_color             {rgba(18, 49, 85, 200)}
     , controls_frame_stroke_width{1.5}
@@ -32,7 +33,7 @@ namespace cycfi { namespace elements
     , indicator_bright_color     {indicator_color.level(1.5)}
     , indicator_hilite_color     {indicator_color.level(2.0)}
     , basic_font_color           {rgba(220, 220, 220, 200)}
-    , disabled_opacity           {0.3}
+    , disabled_opacity           {0.45}
 
 // The symbols_font font is the OS supplied font that includes unicode symbols
 // such as Miscellaneous Technical : Unicode U+2300 – U+23FF (8960–9215)
@@ -106,4 +107,4 @@ namespace cycfi { namespace elements
    {
       global_theme::_theme() = thm;
    }
-}}
+}

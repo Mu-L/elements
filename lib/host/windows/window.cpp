@@ -10,7 +10,7 @@
 
 namespace elements = cycfi::elements;
 
-namespace cycfi { namespace elements
+namespace cycfi::elements
 {
    // UTF8 conversion utils defined in base_view.cpp
 
@@ -43,13 +43,13 @@ namespace cycfi { namespace elements
       void disable_minimize(HWND hwnd)
       {
          SetWindowLongW(hwnd, GWL_STYLE,
-            GetWindowLongW(hwnd, GWL_STYLE) & ~WS_MINIMIZEBOX);
+         GetWindowLongW(hwnd, GWL_STYLE) & ~WS_MINIMIZEBOX);
       }
 
       void disable_maximize(HWND hwnd)
       {
          SetWindowLongW(hwnd, GWL_STYLE,
-            GetWindowLongW(hwnd, GWL_STYLE) & ~WS_MAXIMIZEBOX);
+         GetWindowLongW(hwnd, GWL_STYLE) & ~WS_MAXIMIZEBOX);
       }
 
       void disable_resize(HWND hwnd)
@@ -61,7 +61,7 @@ namespace cycfi { namespace elements
 
       LRESULT on_close(window* win)
       {
-         if (win)
+         if (win && win->on_close)
             win->on_close();
          return 0;
       }
@@ -122,10 +122,13 @@ namespace cycfi { namespace elements
          auto* info = get_window_info(hwnd);
          switch (message)
          {
-            case WM_CLOSE: return on_close(info->wptr);
+            case WM_CLOSE:
+               ShowWindow(hwnd, SW_HIDE);
+               return on_close(info->wptr);
 
             case WM_DPICHANGED:
-            case WM_SIZE: return on_size(hwnd);
+            case WM_SIZE:
+               return on_size(hwnd);
 
             case WM_SIZING:
                if (info)
@@ -270,5 +273,5 @@ namespace cycfi { namespace elements
          true // repaint
       );
    }
-}}
+}
 

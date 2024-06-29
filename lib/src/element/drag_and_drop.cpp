@@ -11,13 +11,13 @@
 #include <elements/support/theme.hpp>
 #include <elements/view.hpp>
 
-namespace cycfi { namespace elements
+namespace cycfi::elements
 {
-   drop_base::drop_base(std::initializer_list<std::string> mime_types_)
+   drop_receiver::drop_receiver(std::initializer_list<std::string> mime_types_)
     : _mime_types{mime_types_}
    {}
 
-   bool drop_base::wants_control() const
+   bool drop_receiver::wants_control() const
    {
       return true;
    }
@@ -30,7 +30,7 @@ namespace cycfi { namespace elements
       }
    }
 
-   void drop_base::prepare_subject(context& ctx)
+   void drop_receiver::prepare_subject(context& ctx)
    {
       proxy_base::prepare_subject(ctx);
       std::string id = address_to_string(this);
@@ -38,7 +38,7 @@ namespace cycfi { namespace elements
          _mime_types.insert(id);
    }
 
-   void drop_base::track_drop(context const& ctx, drop_info const& info, cursor_tracking status)
+   void drop_receiver::track_drop(context const& ctx, drop_info const& info, cursor_tracking status)
    {
       // Return early if none of registered mime types is in the `drop_info`
       if (!std::any_of(_mime_types.begin(), _mime_types.end(),
@@ -56,17 +56,17 @@ namespace cycfi { namespace elements
       }
    }
 
-   bool drop_base::drop(context const& /*ctx*/, drop_info const& /*info*/)
+   bool drop_receiver::drop(context const& /*ctx*/, drop_info const& /*info*/)
    {
       _is_tracking = false;
       return false;
    }
 
-   drop_box_base::drop_box_base(std::initializer_list<std::string> mime_types_)
+   drop_box_element::drop_box_element(std::initializer_list<std::string> mime_types_)
     : base_type{mime_types_}
    {}
 
-   void drop_box_base::draw(context const& ctx)
+   void drop_box_element::draw(context const& ctx)
    {
       proxy_base::draw(ctx);
       if (is_tracking())
@@ -82,12 +82,12 @@ namespace cycfi { namespace elements
       }
    }
 
-   element* drop_box_base::hit_test(context const& ctx, point p, bool leaf, bool /*control*/)
+   element* drop_box_element::hit_test(context const& ctx, point p, bool leaf, bool /*control*/)
    {
       return proxy_base::hit_test(ctx, p, leaf, false); // accept non-control subjects
    }
 
-   bool drop_box_base::drop(context const& ctx, drop_info const& info)
+   bool drop_box_element::drop(context const& ctx, drop_info const& info)
    {
       base_type::drop(ctx, info);
       bool r = on_drop(info);
@@ -315,7 +315,7 @@ namespace cycfi { namespace elements
          std::size_t _num_boxes = 0;
       };
 
-      template <typename Subject>
+      template <concepts::Element Subject>
       inline proxy<remove_cvref_t<Subject>, drag_image_element>
       drag_image(Subject&& subject, std::size_t num_boxes)
       {
@@ -506,5 +506,5 @@ namespace cycfi { namespace elements
          }
       }
    }
-}}
+}
 

@@ -11,7 +11,7 @@
 
 namespace elements = cycfi::elements;
 
-namespace cycfi { namespace elements
+namespace cycfi::elements
 {
    struct host_window
    {
@@ -39,7 +39,7 @@ namespace cycfi { namespace elements
       return 1.0f / gdk_window_get_scale_factor(gdk_win);
    }
 
-   window::window(std::string const& name, int style_, rect const& bounds)
+   window::window(std::string const& name, int /*style_*/, rect const& bounds)
     :  _window(new host_window)
    {
       // Chicken and egg. GTK wants us to create windows only
@@ -162,5 +162,5 @@ namespace cycfi { namespace elements
       else
          on_activate.push_back(set_position);
    }
-}}
+}
 

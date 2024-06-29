@@ -1,43 +1,52 @@
-/*=================================================================================================
+/*=============================================================================
    Copyright (c) 2016-2023 Joel de Guzman
 
    Distributed under the MIT License (https://opensource.org/licenses/MIT)
-=================================================================================================*/
+=============================================================================*/
 #include <elements.hpp>
+#include <sstream>
+#include <iomanip>
 
-/*=================================================================================================
-   Elements does not dictate a particular method for organizing a GUI application. You have the
-   flexibility to structure your application according to your preferences. Here's a breakdown of
-   the essential steps:
+/*=============================================================================
+   Elements does not dictate a particular method for organizing a GUI
+   application. You have the flexibility to structure your application
+   according to your preferences. Here's a breakdown of the essential steps:
 
-   1. Build an elements hierarchy and install that as your content into the view.
+   1. Build an elements hierarchy and install that as your content into the
+      view.
 
-   2. Establish a connection between the GUI elements and the application through callbacks such
-      as the button's `on_click` and the input text box's `on_enter` hooks. These callbacks are
-      invoked when the user clicks the button or presses the enter key in the text box, for
+   2. Establish a connection between the GUI elements and the application
+      through callbacks such as the button's `on_click` and the input text
+      box's `on_enter` hooks. These callbacks are invoked when the user
+      clicks the button or presses the enter key in the text box, for
       example.
 
-   3. Ensure the GUI is updated to accurately represent the application state whenever changes
-      occur. The application may need the ability to inspect the state of the GUI elements or set
-      them to a specific state at any given time.
+   3. Ensure the GUI is updated to accurately represent the application state
+      whenever changes occur. The application may need the ability to inspect
+      the state of the GUI elements or set them to a specific state at any
+      given time.
 
-   A typical approach for steps 2 and 3 involves holding different GUI elements as private members
-   within an application or GUI class. These elements are managed as shared pointers, created
-   using the `share(e)` function and held in the element hieiarchy using the `hold(p)` function.
-   The GUI class oversees the interconnections and presents a higher-level view to the application
-   through a well-defined API.
+   A typical approach for steps 2 and 3 involves holding different GUI
+   elements as private members within an application or GUI class. These
+   elements are managed as shared pointers, created using the `share(e)`
+   function and held in the element hierarchy using the `hold(p)` function.
+   The GUI class oversees the interconnections and presents a higher-level
+   view to the application through a well-defined API.
 
-   This example presents a more elegant way to structure an elements application using Models. The
-   Model (elements/model.hpp) serves as an abstraction for a data type that is linked to one or
-   more user interface elements. The actual data is accessed and modified through the `get` and
-   `set` member functions of the derived class. A user interface element can be linked to a
-   `model` by supplying an `update_function` via the `on_update(f)` member function.
+   This example presents a more elegant way to structure an elements
+   application using Models. The Model (elements/model.hpp) serves as an
+   abstraction for a data type that is linked to one or more user interface
+   elements. The actual data is accessed and modified through the `get` and
+   `set` member functions of the derived class. A user interface element can
+   be linked to a `model` by supplying an `update_function` via the
+   `on_update(f)` member function.
 
-   The Model does not care about the GUI element types it is interacting with. It is an abstract
-   data type that models its underlying data type (e.g. float, int, enum, etc.). It looks and acts
-   like a concrete type.
+   The Model does not care about the GUI element types it is interacting
+   with. It is an abstract data type that models its underlying data type
+   (e.g. float, int, enum, etc.). It looks and acts like a concrete type.
 
-   For example, a `value_model<float>` acts just like a float. You can assign a value to it:
+   For example, a `value_model<float>` acts just like a float. You can assign
+   a value to it:
 
       m = 1.0;
 
@@ -51,18 +60,20 @@
 
    These capabilities implement 2 and 3 of the requirements.
 
-   The `value_model<float>` is a derived class of the template class `model`. It specifically
-   addresses the typical scenario where the data is internally stored by value within the class.
-   The class includes `get` and `set` member functions following the `Model` concept required by
-   the model template, facilitating the retrieval and modification of data.
+   The `value_model<float>` is a derived class of the template class `model`.
+   It specifically addresses the typical scenario where the data is
+   internally stored by value within the class. The class includes `get` and
+   `set` member functions following the `Model` concept required by the model
+   template, facilitating the retrieval and modification of data.
 
-      Note: While this example utilizes the `value_model<float>`, you have the flexibility to
-      create your custom subclass of the template class model to implement more tailored methods
-      of accessing your data.
+      Note: While this example utilizes the `value_model<float>`, you have
+      the flexibility to create your custom subclass of the template class
+      model to implement more tailored methods of accessing your data.
 
-   Adopting the model paradigm, the application and the user interface engage with the model
-   independently, unaware of each other's existence. The model serves as a central hub,
-   facilitating and coordinating interactions between them:
+   Adopting the model paradigm, the application and the user interface engage
+   with the model independently, unaware of each other's existence. The model
+   serves as a central hub, facilitating and coordinating interactions
+   between them:
 
       application <----> model <----> GUI
 
@@ -71,20 +82,23 @@
    1. The application is aware of the model, manages and interacts with it.
    2. The GUI is also aware of the model and links to it via callbacks.
    3. The model is unaware of the GUI.
-   4. The model may be aware of the application, e.g. if it needs to get data from the
-      application, but not necessarily, e.g. if it holds the data itself.
+   4. The model may be aware of the application, e.g. if it needs to get data
+      from the application, but not necessarily, e.g. if it holds the data
+      itself.
    5. The GUI and the application are both unaware of each other.
 
-   Number 5 is an important design principle known as "decoupling," emphasizing the separation of
-   concerns and promoting independence between the GUI and the application components. The
-   advantages of decoupling in a software design context include, modularity, scalability, and
-   reusability, and ease of maintainance.
+   Number 5 is an important design principle known as "decoupling,"
+   emphasizing the separation of concerns and promoting independence between
+   the GUI and the application components. The advantages of decoupling in a
+   software design context include, modularity, scalability, and reusability,
+   and ease of maintainance.
 
-   In this example, we present a very simple model, comprising of a floating point value and a
-   preset. As the GUI elements are being built, they attach themselves to the model by utilizing
-   its on_update(f) member function at different nodes within the elements hierarchy. This
-   illustrates the approach of designing the user interface based on models.
-=================================================================================================*/
+   In this example, we present a very simple model, comprising of a floating
+   point value and a preset. As the GUI elements are being built, they attach
+   themselves to the model by utilizing its on_update(f) member function at
+   different nodes within the elements hierarchy. This illustrates the
+   approach of designing the user interface based on models.
+=============================================================================*/
 namespace elements = cycfi::elements;
 namespace icons = elements::icons;
 
@@ -98,7 +112,6 @@ using elements::basic_knob;
 using elements::selection_menu;
 using elements::input_box;
 using elements::label;
-using elements::hspace;
 using elements::view;
 using elements::app;
 using elements::window;
@@ -253,9 +266,8 @@ auto make_preset_menu(my_model& model, view& view_)
       align_top(
          align_center(
             hsize(180,
-               htile(
+               htile_spaced(10.0,
                   label("Preset:"),
-                  hspace(10),
                   preset_menu.first
                )
             )
@@ -273,15 +285,17 @@ auto make_input_box(my_model& model, view& view_)
    model._value.on_update(
       [&view_, input = tbox.second](double val)
       {
-         input->set_text(std::to_string(val));
+         std::ostringstream stream;
+         stream << std::fixed << std::setprecision(2) << val;
+         input->set_text(stream.str());
          input->select_all();
          view_.refresh(*input);
       }
    );
 
-   // When the user presses the enter key, we'll convert the text to a number and then update the
-   // model with the new value. We will deal with input validation and bring up a message box when
-   // errors are encountered.
+   // When the user presses the enter key, we'll convert the text to a number
+   // and then update the model with the new value. We will deal with input
+   // validation and bring up a message box when errors are encountered.
    tbox.second->on_enter =
       [&model, &view_](std::string_view text)->bool
       {
@@ -317,25 +331,35 @@ auto make_input_box(my_model& model, view& view_)
 
          if (error != "")
          {
-            auto&& on_ok =
+            auto on_ok =
                [&model]()
                {
-                  // When errors are enountered, reset the model's value to its previous state.
+                  // When errors are encountered, reset the model's value to
+                  // its previous state.
                   model._value.update();
                };
 
             // Bring up a message box.
             auto popup = message_box1(view_, error, icons::attention, on_ok);
-            view_.add(popup);
+            open_popup(popup, view_);
             return false;
          }
+         return true;
+      };
+
+   tbox.second->on_escape =
+      [&model]()->bool
+      {
+         // When the user presses the escape key, reset the model's value to
+         // its previous state.
+         model._value.update();
          return true;
       };
 
    return
       align_bottom(
          align_center(
-            hsize(70, tbox.first)
+            hsize(40, tbox.first)
          )
       );
 }

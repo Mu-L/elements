@@ -7,7 +7,7 @@
 #include <elements/window.hpp>
 #include <elements/support/context.hpp>
 
- namespace cycfi { namespace elements
+ namespace cycfi::elements
  {
    view::view(extent size_)
     : base_view(size_)
@@ -358,9 +358,14 @@
       if (_content.focus_index() != -1)
       {
          with_context_do(
-            [](auto const& ctx, auto& /*_main_element*/)
+            [this](auto const& ctx, auto& /*_main_element*/)
             {
-               elements::relinquish_focus(ctx);
+               ctx.element->in_context_do(ctx, _content,
+                  [this](auto const& ctx)
+                  {
+                     elements::relinquish_focus(_content, ctx);
+                  }
+               );
             },
             *this, _current_bounds
          );
@@ -446,4 +451,4 @@
          *this, _current_bounds
       );
    }
-}}
+}

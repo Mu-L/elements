@@ -9,7 +9,7 @@
 #include <elements/element/port.hpp>
 #include <elements/element/traversal.hpp>
 
-namespace cycfi { namespace elements
+namespace cycfi::elements
 {
    void basic_button_menu::layout_menu(context const& ctx)
    {
@@ -183,8 +183,6 @@ namespace cycfi { namespace elements
             case key_code::enter:
             case key_code::escape:
             {
-               select(false);
-
                // Close the popup
                if (auto _popup = find_parent<basic_popup_element*>(ctx))
                   _popup->close(ctx.view);
@@ -335,4 +333,4 @@ namespace cycfi { namespace elements
    {
       return true;
    }
-}}
+}
