@@ -25,11 +25,11 @@ jobs:
           cxx: "clang++"
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         submodules: 'recursive'
     - name: Cache vcpkg installed libraries
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: |
           !c:/vcpkg/packages
@@ -73,8 +73,6 @@ jobs:
       run: |
         set(ENV{CC} ${{ matrix.config.cc }})
         set(ENV{CXX} ${{ matrix.config.cxx }})
-        # If we are on windows, run the environment script, parse it with cmake
-        # and set environment variables with it (required for Visual Studio)
         if ("${{ runner.os }}" STREQUAL "Windows" AND NOT "x${{ matrix.config.environment_script }}" STREQUAL "x")
           execute_process(
             COMMAND "${{ matrix.config.environment_script }}" && set
@@ -93,53 +91,4 @@ jobs:
             COMMAND ${CMAKE_COMMAND}
               -S .
               -B build
-              -D CMAKE_BUILD_TYPE=$ENV{BUILD_TYPE}
-              -G Ninja
-              -D CMAKE_MAKE_PROGRAM=ninja
-              -D CMAKE_TOOLCHAIN_FILE=c:/vcpkg/scripts/buildsystems/vcpkg.cmake
-            RESULT_VARIABLE result
-            ERROR_VARIABLE error_message
-          )
-        else()
-            execute_process(
-            COMMAND ${CMAKE_COMMAND}
-              -S .
-              -B build
-              -D CMAKE_BUILD_TYPE=$ENV{BUILD_TYPE}
-              -G Ninja
-              -D CMAKE_MAKE_PROGRAM=ninja
-            RESULT_VARIABLE result
-            ERROR_VARIABLE error_message
-          )
-        endif()
-
-        if (NOT result EQUAL 0)
-          message(FATAL_ERROR "Could not run with ${CMAKE_COMMAND}: Got ${error_message} - ${result}")
-        endif()
-    - name: Build
-      shell: cmake -P {0}
-      run: |
-        # If we are on windows, run the environment script, parse it with cmake
-        # and set environment variables with it (required for Visual Studio)
-        if ("${{ runner.os }}" STREQUAL "Windows" AND NOT "x${{ matrix.config.environment_script }}" STREQUAL "x")
-          execute_process(
-            COMMAND "${{ matrix.config.environment_script }}" && set
-            OUTPUT_FILE environment_script_output.txt
-          )
-          file(STRINGS environment_script_output.txt output_lines)
-          foreach(line IN LISTS output_lines)
-            if (line MATCHES "^([a-zA-Z0-9_-]+)=(.*)$")
-              set(ENV{${CMAKE_MATCH_1}} "${CMAKE_MATCH_2}")
-            endif()
-          endforeach()
-        endif()
-
-        execute_process(
-          COMMAND ${CMAKE_COMMAND} --build build
-          RESULT_VARIABLE result
-          ERROR_VARIABLE error_message
-        )
-
-        if (NOT result EQUAL 0)
-          message(FATAL_ERROR "Could not run with ${CMAKE_COMMAND}: Got ${error_message} - ${result}")
-        endif()
+              -D CMAKE_BUILD_TYPE=$
